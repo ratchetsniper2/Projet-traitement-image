@@ -23,6 +23,8 @@ private:
 
 	void OnProcessImage(wxCommandEvent& event);
 
+	void OnBack();
+
 	//void OnMouse(wxEVT_MOTION& event);
 };
 

@@ -28,8 +28,12 @@ public:
     void Nbcolor();
     void EnhenceContrast();
 
+    void SaveDataBeforeTraitment();
+    void BackTraitment();
+
 private:
     MyImage *m_image;		// used to load and process the image
+    unsigned char *dataBeforeTraitment;	// data befor last traitment
     wxBitmap m_bitmap;	// used to display the image
 
     MyHistogram* histogram;
