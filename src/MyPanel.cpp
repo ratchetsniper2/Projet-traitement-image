@@ -1,7 +1,13 @@
 #include "../include/MyPanel.h"
 
+
+wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
+wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
+
 MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent), m_image(NULL), histogram(NULL){
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
+    Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
+    Bind(EVENEMENT_LUMINOSITE, &MyPanel::OnLuminosite, this) ;
 }
 
 MyPanel::~MyPanel(){}
@@ -146,4 +152,54 @@ void MyPanel::EnhenceContrast(){
     }else{
         noImageOpen();
     }
+}
+
+
+void MyPanel::ThresholdImage(){
+    if (m_image != NULL){
+
+        MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
+
+        if (dlg->ShowModal() == wxID_OK){
+
+        }
+        else{
+            //annuler la transformation
+        }
+    }else{
+        noImageOpen();
+
+    }
+}
+
+void MyPanel::OnThresholdImage(wxCommandEvent& event){
+
+            //remmettre l'image d'origine avant de faire la transformation
+            m_image->Threshold(event.GetSelection());
+            Refresh();
+}
+
+void MyPanel::OnLuminosite(wxCommandEvent& event){
+
+            //remmettre l'image d'origine avant de faire la transformation
+            m_image->Luminosite(event.GetSelection());
+            Refresh();
+}
+
+void MyPanel::Luminosite(){
+if (m_image != NULL){
+
+        MyLuminositeDialog *dlg = new MyLuminositeDialog(this, -1, wxT("Luminosité"), wxDefaultPosition, wxSize(250,140));
+
+        if (dlg->ShowModal() == wxID_OK){
+
+        }
+        else{
+            //annuler la transformation
+        }
+    }else{
+        noImageOpen();
+
+    }
+
 }

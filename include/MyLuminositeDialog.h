@@ -1,19 +1,16 @@
-#ifndef MYTHRESHOLDDIALOG_H
-#define MYTHRESHOLDDIALOG_H
+#ifndef MYLUMINOSITEDIALOG_H
+#define MYLUMINOSITEDIALOG_H
 
 #include <wx/wx.h>
-wxDECLARE_EVENT(MON_EVENEMENT, wxCommandEvent);
 wxDECLARE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
 
-class MyThresholdDialog : public wxDialog{
+class MyLuminositeDialog : public wxDialog{
     public:
-        MyThresholdDialog(wxWindow* parent, wxWindowID id = wxID_ANY,
+        MyLuminositeDialog(wxWindow* parent, wxWindowID id = wxID_ANY,
             const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
-        virtual ~MyThresholdDialog();
-        void OnScroll( wxScrollEvent& event );
+        virtual ~MyLuminositeDialog();
         void OnScrollLuminosite( wxScrollEvent& event );
-        wxSlider* m_threshold;
         wxSlider* m_luminosite;
 
     protected:
@@ -23,4 +20,4 @@ class MyThresholdDialog : public wxDialog{
         wxButton* m_cancelButton;
 };
 
-#endif // MYTHRESHOLDDIALOG_H
+#endif // MYLUMINOSITEDIALOG_H

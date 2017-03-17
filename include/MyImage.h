@@ -21,6 +21,7 @@ class MyImage: public wxImage{
         void Desaturate();
         void Threshold(int seuil);
         void Posterize(int nbColor);
+        void Luminosite(int lumi);
 
         int Nbcolor();
 
