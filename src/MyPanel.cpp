@@ -1,6 +1,7 @@
 #include "../include/MyPanel.h"
 
 MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent), m_image(NULL), histogram(NULL){
+    imageScale = 1.0;
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
 }
 
@@ -21,7 +22,7 @@ void MyPanel::OpenImage(wxString fileName){
 
     m_width = m_image->GetWidth();
     m_height = m_image->GetHeight();
-    GetParent()->SetClientSize(m_width, m_height);
+    GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
     Refresh();
 }
 
@@ -37,6 +38,7 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     if (m_image != NULL){
         m_bitmap = MyImage(*m_image);
         wxPaintDC dc(this);
+        dc.SetUserScale(imageScale, imageScale);
         dc.DrawBitmap(m_bitmap, 0, 0);
         histogram = new MyHistogram(m_image);
     }
@@ -81,7 +83,7 @@ void MyPanel::RotateImage(){
             // redimention ----
             m_width = m_image->GetWidth();
             m_height = m_image->GetHeight();
-            GetParent()->SetClientSize(m_width, m_height);
+            GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
 
             Refresh();
         }
@@ -170,9 +172,32 @@ void MyPanel::BackTraitment(){
         // redimention ----
         m_width = m_image->GetWidth();
         m_height = m_image->GetHeight();
-        GetParent()->SetClientSize(m_width, m_height);
+        GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
 
         Refresh();
+    }else{
+        noImageOpen();
+    }
+}
+
+void MyPanel::ReSize(){
+    if (m_image != NULL){
+
+        //MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxT("Rotate"), wxDefaultPosition, wxSize(200,200));
+        if (true){//dlg->ShowModal() == wxID_OK){
+            SaveImageBeforeTraitment();
+            int xSize = 200;
+            int ySize = 200;
+
+            m_image->Rescale(xSize, ySize);
+
+            // redimention ----
+            m_width = xSize;
+            m_height = ySize;
+            GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
+
+            Refresh();
+        }
     }else{
         noImageOpen();
     }

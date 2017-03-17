@@ -31,12 +31,16 @@ public:
     void SaveImageBeforeTraitment();
     void BackTraitment();
 
+    void ReSize();
+
 private:
     MyImage *m_image;		// used to load and process the image
     MyImage m_imageCopie;	// data befor last traitment
     wxBitmap m_bitmap;	// used to display the image
 
     MyHistogram* histogram;
+
+    double imageScale; // pour zoomer sur l'image
 
     int m_width;
     int m_height;

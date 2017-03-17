@@ -20,7 +20,8 @@ enum{
 	ID_Posterize,
 	ID_Nbcolor,
 	ID_EnhenceContrast,
-	ID_Back
+	ID_Back,
+	ID_ReSize
 };
 
 
@@ -104,6 +105,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	menuProcess->Append(ID_EnhenceContrast, wxT("EnhenceContrast...\tCtrl-E"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_EnhenceContrast);
+
+	menuProcess->Append(ID_ReSize, wxT("ReSize..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_ReSize);
 
 	menuBar->Append( menuProcess, wxT("Process" ));
 
@@ -213,6 +217,10 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
 
         case ID_Back:
             m_panel->BackTraitment();
+            break;
+
+        case ID_ReSize:
+            m_panel->ReSize();
             break;
     }
 }
