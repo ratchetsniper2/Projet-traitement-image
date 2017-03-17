@@ -21,7 +21,8 @@ enum{
 	ID_Nbcolor,
 	ID_EnhenceContrast,
 	ID_Threshold_V2,
-	ID_Luminosite
+	ID_Luminosite,
+	ID_Back
 };
 
 
@@ -51,6 +52,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	menuFile->Append(ID_Save, wxT("Save...\tCtrl-S"));
 	Bind(wxEVT_MENU, &MyFrame::OnSaveImage, this, ID_Save);
+
+	menuFile->Append(ID_Back, wxT("Undo...\tCtrl-Z"));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Back);
 
 	menuFile->AppendSeparator();
 
@@ -214,10 +218,17 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         case ID_EnhenceContrast:
             m_panel->EnhenceContrast();
             break;
+
         case ID_Threshold_V2:
             m_panel->ThresholdImage();
+            break;
+
         case ID_Luminosite:
             m_panel->Luminosite();
+            break;
+
+        case ID_Back:
+            m_panel->BackTraitment();
             break;
     }
 }

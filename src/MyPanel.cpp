@@ -22,6 +22,7 @@ void MyPanel::OpenImage(wxString fileName){
         delete(histogram);
     }
     m_image = new MyImage(fileName);
+    SaveImageBeforeTraitment();
     histogram = new MyHistogram(m_image);
 
     m_width = m_image->GetWidth();
@@ -49,6 +50,7 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
 
 void MyPanel::MirrorImage(bool horizontal){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         *m_image = m_image->Mirror(horizontal);
 
         Refresh();
@@ -59,7 +61,8 @@ void MyPanel::MirrorImage(bool horizontal){
 
 void MyPanel::BlurImage(){
     if (m_image != NULL){
-       *m_image = m_image->Blur(1);
+        SaveImageBeforeTraitment();
+        *m_image = m_image->Blur(1);
 
         Refresh();
     }else{
@@ -72,6 +75,7 @@ void MyPanel::RotateImage(){
 
         MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxT("Rotate"), wxDefaultPosition, wxSize(200,200));
         if (dlg->ShowModal() == wxID_OK){
+            SaveImageBeforeTraitment();
             if (dlg->m_radioBox->GetSelection() == 0){
                 *m_image = m_image->Rotate90();
             }else if (dlg->m_radioBox->GetSelection() == 1){
@@ -94,6 +98,7 @@ void MyPanel::RotateImage(){
 
 void MyPanel::Negative(){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         m_image->Negative();
         Refresh();
     }else{
@@ -103,6 +108,7 @@ void MyPanel::Negative(){
 
 void MyPanel::Desaturate(){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         m_image->Desaturate();
         Refresh();
     }else{
@@ -114,6 +120,7 @@ void MyPanel::Threshold(){
     if (m_image != NULL){
         MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
         if (dlg->ShowModal() == wxID_OK){
+            SaveImageBeforeTraitment();
             m_image->Threshold(dlg->m_threshold->GetValue());
             //free(dlg);
             Refresh();
@@ -125,6 +132,7 @@ void MyPanel::Threshold(){
 
 void MyPanel::Posterize(){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         m_image->Posterize(64);
         Refresh();
     }else{
@@ -147,6 +155,7 @@ void MyPanel::EnhenceContrast(){
         int maxValue = 0;
         histogram->getBorderValues(&minValue, &maxValue);
 
+        SaveImageBeforeTraitment();
         m_image->EnhenceContrast(minValue, maxValue);
         Refresh();
     }else{
@@ -164,6 +173,7 @@ void MyPanel::ThresholdImage(){
 
         }
         else{
+            BackTraitment();
             //annuler la transformation
         }
     }else{
@@ -181,7 +191,9 @@ void MyPanel::OnThresholdImage(wxCommandEvent& event){
 
 void MyPanel::OnLuminosite(wxCommandEvent& event){
 
-            //remmettre l'image d'origine avant de faire la transformation
+            BackTraitment();
+            SaveImageBeforeTraitment();
+
             m_image->Luminosite(event.GetSelection());
             Refresh();
 }
@@ -195,6 +207,7 @@ if (m_image != NULL){
 
         }
         else{
+            BackTraitment();
             //annuler la transformation
         }
     }else{
@@ -202,4 +215,23 @@ if (m_image != NULL){
 
     }
 
+void MyPanel::SaveImageBeforeTraitment(){
+    m_imageCopie = m_image->Copy();
+}
+
+void MyPanel::BackTraitment(){
+    if (m_image != NULL){
+        MyImage temp = m_image->Copy();
+        *m_image = m_imageCopie;
+        m_imageCopie = temp;
+
+        // redimention ----
+        m_width = m_image->GetWidth();
+        m_height = m_image->GetHeight();
+        GetParent()->SetClientSize(m_width, m_height);
+
+        Refresh();
+    }else{
+        noImageOpen();
+    }
 }
