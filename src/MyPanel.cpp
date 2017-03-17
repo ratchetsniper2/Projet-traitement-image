@@ -214,6 +214,7 @@ if (m_image != NULL){
         noImageOpen();
 
     }
+}
 
 void MyPanel::SaveImageBeforeTraitment(){
     m_imageCopie = m_image->Copy();

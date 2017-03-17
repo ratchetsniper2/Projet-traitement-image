@@ -21,15 +21,12 @@ private:
 	void OnOpenImage(wxCommandEvent& event);
 	void OnSaveImage(wxCommandEvent& event);
 
-<<<<<<< HEAD
 	void OnProcessImage(wxCommandEvent& event);	//void OnMouse(wxEVT_MOTION& event);
-=======
-	void OnProcessImage(wxCommandEvent& event);
+
 
 	void OnBack();
 
 	//void OnMouse(wxEVT_MOTION& event);
->>>>>>> 3a34d1b92319a5b067e0bf813e9f6cf6155508a4
 };
 
 #endif // MYFRAME_H
