@@ -25,6 +25,7 @@ class MyImage: public wxImage{
         int Nbcolor();
 
         void EnhenceContrast(int minValue, int maxValue);
+        void Luminosite(int lumi);
 
 };
 

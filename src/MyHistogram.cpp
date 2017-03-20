@@ -1,4 +1,4 @@
-#include "MyHistogram.h"
+#include "../include/MyHistogram.h"
 
 MyHistogram::MyHistogram(MyImage* m_image){
     unsigned char* data = m_image->GetData();

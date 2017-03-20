@@ -4,6 +4,7 @@
 #include "MyHistogram.h"
 #include "MyImage.h"
 #include "MyThresholdDialog.h"
+#include "MyLuminositeDialog.h"
 #include "MyRotateDialog.h"
 
 class MyPanel: public wxPanel{
@@ -23,8 +24,11 @@ public:
     void Negative();
     void Desaturate();
     void Threshold();
+    void ThresholdImage();
     void Posterize();
-
+    void OnThresholdImage(wxCommandEvent& event);
+    void OnLuminosite(wxCommandEvent& event);
+    void Luminosite();
     void Nbcolor();
     void EnhenceContrast();
 

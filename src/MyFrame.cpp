@@ -21,7 +21,9 @@ enum{
 	ID_Nbcolor,
 	ID_EnhenceContrast,
 	ID_Back,
-	ID_ReSize
+	ID_ReSize,
+	ID_Threshold_V2,
+	ID_Luminosite,
 };
 
 
@@ -108,6 +110,12 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	menuProcess->Append(ID_ReSize, wxT("ReSize..."));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_ReSize);
+
+	menuProcess->Append(ID_Threshold_V2, wxT("Threshold_V2..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Threshold_V2);
+
+	menuProcess->Append(ID_Luminosite, wxT("Luminosité..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Luminosite);
 
 	menuBar->Append( menuProcess, wxT("Process" ));
 
@@ -213,6 +221,14 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
 
         case ID_EnhenceContrast:
             m_panel->EnhenceContrast();
+            break;
+
+        case ID_Threshold_V2:
+            m_panel->ThresholdImage();
+            break;
+
+        case ID_Luminosite:
+            m_panel->Luminosite();
             break;
 
         case ID_Back:

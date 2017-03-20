@@ -1,4 +1,4 @@
-#include "MyImage.h"
+#include "../include/MyImage.h"
 
 MyImage::MyImage(int largeur, int hauteur) : wxImage(largeur, hauteur){
 }
@@ -113,4 +113,18 @@ void MyImage::EnhenceContrast(int minValue, int maxValue){
     for(unsigned long int i = 0 ; i < sizeImage ; i+=1){
         data[i] = (255/dif)*(data[i] - minValue);
     }
+}
+
+void MyImage::Luminosite(int lumi){
+    unsigned char* data = GetData();
+    unsigned long int sizeImage = this->GetHeight()*this->GetWidth()*3;
+    if(lumi>=100){
+        lumi= lumi - 200;
+    }
+    for(unsigned long int i = 0 ; i < sizeImage ; i+=3){
+        data[i] = std::max(0, std::min(255, data[i]+lumi));
+        data[i+1] = std::max(0, std::min(255, data[i+1]+lumi));
+        data[i+2] = std::max(0, std::min(255, data[i+2]+lumi));
+    }
+
 }
