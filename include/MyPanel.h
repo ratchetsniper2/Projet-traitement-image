@@ -1,15 +1,16 @@
 #ifndef MYPANEL_H
 #define MYPANEL_H
 
-#include "MyHistogram.h"
-#include "MyImage.h"
-#include "MyThresholdDialog.h"
-#include "MyLuminositeDialog.h"
-#include "MyRotateDialog.h"
+#include "../include/MyHistogram.h"
+#include "../include/MyImage.h"
+#include "../include/MyThresholdDialog.h"
+#include "../include/MyLuminositeDialog.h"
+#include "../include/MyRotateDialog.h"
+#include "../include/MyReSizeDialog.h"
 
-class MyPanel: public wxPanel{
+class MyPanel: public wxScrolledWindow{
 public:
-    MyPanel( wxWindow *parent ) ;
+    MyPanel( wxFrame *parent ) ;
     ~MyPanel() ;
     void OpenImage(wxString fileName);
     void SaveImage(wxString fileName);
@@ -48,6 +49,9 @@ private:
 
     int m_width;
     int m_height;
+
+    wxFrame* parent;
+    void OnMouseWheel(wxMouseEvent& event);
 
 };
 

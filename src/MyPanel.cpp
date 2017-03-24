@@ -4,11 +4,14 @@
 wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
 wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
 
-MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent), m_image(NULL), histogram(NULL){
+MyPanel::MyPanel(wxFrame *parent) : wxScrolledWindow(parent), m_image(NULL), histogram(NULL), parent(parent){
     imageScale = 1.0;
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
-    Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
-    Bind(EVENEMENT_LUMINOSITE, &MyPanel::OnLuminosite, this) ;
+    Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this);
+    Bind(EVENEMENT_LUMINOSITE, &MyPanel::OnLuminosite, this);
+
+    Bind(wxEVT_MOUSEWHEEL, &MyPanel::OnMouseWheel, this);
+
 }
 
 MyPanel::~MyPanel(){}
@@ -21,6 +24,7 @@ void MyPanel::OpenImage(wxString fileName){
     if (m_image != NULL){
         delete(m_image);
         delete(histogram);
+        imageScale = 1.0;
     }
     m_image = new MyImage(fileName);
     SaveImageBeforeTraitment();
@@ -28,7 +32,8 @@ void MyPanel::OpenImage(wxString fileName){
 
     m_width = m_image->GetWidth();
     m_height = m_image->GetHeight();
-    GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
+    SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+    GetParent()->SetClientSize(m_width, m_height);
     Refresh();
 }
 
@@ -89,7 +94,8 @@ void MyPanel::RotateImage(){
             // redimention ----
             m_width = m_image->GetWidth();
             m_height = m_image->GetHeight();
-            GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
+            SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+            GetParent()->SetClientSize(m_width, m_height);
 
             Refresh();
         }
@@ -135,7 +141,7 @@ void MyPanel::Threshold(){
 void MyPanel::Posterize(){
     if (m_image != NULL){
         SaveImageBeforeTraitment();
-        m_image->Posterize(64);
+        m_image->Posterize(8);
         Refresh();
     }else{
         noImageOpen();
@@ -236,7 +242,8 @@ void MyPanel::BackTraitment(){
         // redimention ----
         m_width = m_image->GetWidth();
         m_height = m_image->GetHeight();
-        GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
+        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+        GetParent()->SetClientSize(m_width, m_height);
 
         Refresh();
     }else{
@@ -247,22 +254,42 @@ void MyPanel::BackTraitment(){
 void MyPanel::ReSize(){
     if (m_image != NULL){
 
-        //MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxT("Rotate"), wxDefaultPosition, wxSize(200,200));
-        if (true){//dlg->ShowModal() == wxID_OK){
+        MyReSizeDialog *dlg = new MyReSizeDialog(m_image->GetWidth() ,m_image->GetHeight() , this, -1, wxT("ReSize"), wxDefaultPosition, wxSize(200,200));
+        if (dlg->ShowModal() == wxID_OK){
             SaveImageBeforeTraitment();
-            int xSize = 200;
-            int ySize = 200;
+            int xSize = wxAtoi(dlg->m_widthSize->GetValue());
+            int ySize = wxAtoi(dlg->m_heightSize->GetValue());
 
             m_image->Rescale(xSize, ySize);
 
             // redimention ----
             m_width = xSize;
             m_height = ySize;
-            GetParent()->SetClientSize(m_width*imageScale, m_height*imageScale);
+            SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+            GetParent()->SetClientSize(m_width, m_height);
 
             Refresh();
         }
     }else{
         noImageOpen();
+    }
+}
+
+// pour le zoom
+void MyPanel::OnMouseWheel(wxMouseEvent& event){
+    if (m_image != NULL && event.ControlDown()){
+        if (event.GetWheelRotation() > 0){
+            // zoom
+            imageScale += 0.05;
+        }else{
+            imageScale -= 0.05;
+            if (imageScale < 0){
+                imageScale = 0;
+            }
+        }
+
+        parent->GetStatusBar()->SetStatusText("Zoom : "+std::to_string((int) (imageScale*100))+" %");
+        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+        Refresh();
     }
 }

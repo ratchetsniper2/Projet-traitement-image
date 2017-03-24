@@ -1,5 +1,6 @@
 #include "../include/MyFrame.h"
 #include <time.h>
+#include <wx/event.h>
 
 // énumération. Elle gère la numérotation automatiquement
 enum{
@@ -200,7 +201,7 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
             clock_t t; t = clock();
             m_panel->Negative();
             t = clock() - t;
-            this->GetStatusBar()->SetStatusText("Temps de traitement : "+std::to_string(((float)t)/CLOCKS_PER_SEC));
+            GetStatusBar()->SetStatusText("Temps de traitement : "+std::to_string(((float)t)/CLOCKS_PER_SEC));
             break;
 
         case ID_Desaturate:
