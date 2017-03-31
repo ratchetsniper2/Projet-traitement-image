@@ -135,7 +135,7 @@ void MyFrame::OnHello(wxCommandEvent& event){
 }
 
 void MyFrame::OnAbout(wxCommandEvent& event){
-	wxLogMessage(wxT("Creator : Valentin Bouchet"));
+	wxLogMessage(wxT("Creator :\nValentin Bouchet\nGuerre-Chaley Mathieu"));
 }
 
 // resize de la fenetre

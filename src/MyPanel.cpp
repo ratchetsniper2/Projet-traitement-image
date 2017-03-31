@@ -246,11 +246,13 @@ void MyPanel::BackTraitment(){
         *m_image = m_imageCopie;
         m_imageCopie = temp;
 
-        // redimention ----
-        m_width = m_image->GetWidth();
-        m_height = m_image->GetHeight();
-        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
-        GetParent()->SetClientSize(m_width, m_height);
+        // redimention ---- pour refaire une rotation inverse
+        if (m_width != m_image->GetWidth() || m_height != m_image->GetHeight()){
+            m_width = m_image->GetWidth();
+            m_height = m_image->GetHeight();
+            SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+            GetParent()->SetClientSize(m_width, m_height);
+        }
 
         Refresh();
     }else{
@@ -282,26 +284,57 @@ void MyPanel::ReSize(){
     }
 }
 
-// pour le zoom
+// pour le zoom (ctrl + molette)
 void MyPanel::OnMouseWheel(wxMouseEvent& event){
     if (m_image != NULL && event.ControlDown()){
+        double incrScale = 0.05;
+
+        // changement du zoom
         if (event.GetWheelRotation() > 0){
             // zoom
-            imageScale += 0.05;
+            imageScale += incrScale;
         }else{
-            imageScale -= 0.05;
+            imageScale -= incrScale;
             if (imageScale < 0){
                 imageScale = 0;
             }
         }
 
+        // calcul du delta (déplacement de l'image par rapport à l'encienne position) par ropport à la position de la souris
+        // permet de zoomer à la position de lasouris
+        wxPoint point = ScreenToClient(wxGetMousePosition());
+
+        int deltaPosXScroll = 0;
+        double clientXSize = GetParent()->GetClientSize().GetWidth();
+        if (clientXSize < m_width*imageScale){
+            deltaPosXScroll = (incrScale*m_width/2)*(((double) point.x)/(clientXSize/2));
+        }
+
+        int deltaPosYScroll = 0;
+        double clientYSize = GetParent()->GetClientSize().GetHeight();
+        if (clientYSize < m_height*imageScale){
+            deltaPosYScroll = (incrScale*m_height/2)*(((double) point.y)/(clientYSize/2));
+        }
+
+        // inversement du delta si on de-zoom
+        if (event.GetWheelRotation() < 0){
+                if (GetViewStart().x > deltaPosXScroll){ // inversement si on peut de-zoomer dans cette direction
+                    deltaPosXScroll = -deltaPosXScroll;
+                }else{
+                    deltaPosXScroll = 0;
+                }
+        }
+        if (event.GetWheelRotation() < 0){
+                if (GetViewStart().y > deltaPosYScroll){
+                    deltaPosYScroll = -deltaPosYScroll;
+                }else{
+                    deltaPosYScroll = 0;
+                }
+        }
+
+        // actualisation de l'image
         parent->GetStatusBar()->SetStatusText("Zoom : "+std::to_string((int) (imageScale*100))+" %");
-
-        wxPoint point = wxGetMousePosition();
-        int posX = 0; //point.x;
-        int posY = 0; //point.y;
-
-        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale, posX, posY);
+        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale, GetViewStart().x+deltaPosXScroll, GetViewStart().y+deltaPosYScroll);
         Refresh();
     }
 }
