@@ -7,7 +7,7 @@ wxDECLARE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
 
 class MyThresholdDialog : public wxDialog{
     public:
-        MyThresholdDialog(wxWindow* parent, wxWindowID id = wxID_ANY,
+        MyThresholdDialog(bool v2, wxWindow* parent, wxWindowID id = wxID_ANY,
             const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
         virtual ~MyThresholdDialog();

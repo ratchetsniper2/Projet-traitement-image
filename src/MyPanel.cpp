@@ -39,7 +39,7 @@ void MyPanel::OpenImage(wxString fileName){
 
 void MyPanel::SaveImage(){
     if (m_image != NULL){
-        wxString filename = wxSaveFileSelector("Save", "*", "test");
+        wxString filename = wxSaveFileSelector("Save", "", "");
         if (!filename.empty()){
             m_image->SaveFile(filename);
         }
@@ -133,7 +133,7 @@ void MyPanel::Desaturate(){
 
 void MyPanel::Threshold(){
     if (m_image != NULL){
-        MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
+        MyThresholdDialog *dlg = new MyThresholdDialog(false, this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
         if (dlg->ShowModal() == wxID_OK){
             SaveImageBeforeTraitment();
             m_image->Threshold(dlg->m_threshold->GetValue());
@@ -183,7 +183,7 @@ void MyPanel::ThresholdImage(){
     if (m_image != NULL){
 
         SaveImageBeforeTraitment();
-        MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
+        MyThresholdDialog *dlg = new MyThresholdDialog(true, this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
 
         if (dlg->ShowModal() == wxID_OK){
 
@@ -291,7 +291,7 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
 
         // changement du zoom
         if (event.GetWheelRotation() > 0){
-            // zoom
+            // zoom in
             imageScale += incrScale;
         }else{
             imageScale -= incrScale;
@@ -300,8 +300,8 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
             }
         }
 
-        // calcul du delta (déplacement de l'image par rapport à l'encienne position) par ropport à la position de la souris
-        // permet de zoomer à la position de lasouris
+        // calcul du delta (déplacement de l'image par rapport à l'encienne position) par rapport à la position de la souris
+        // permet de zoomer à la position de la souris
         wxPoint point = ScreenToClient(wxGetMousePosition());
 
         int deltaPosXScroll = 0;

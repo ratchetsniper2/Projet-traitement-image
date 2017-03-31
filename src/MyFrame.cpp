@@ -174,7 +174,7 @@ void MyFrame::OnOpenImage(wxCommandEvent& event){
 }
 
 void MyFrame::OnSaveImage(wxCommandEvent& event){
-        m_panel->SaveImage();
+    m_panel->SaveImage();
 }
 
 void MyFrame::OnProcessImage(wxCommandEvent& event){
