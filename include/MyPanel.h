@@ -8,12 +8,12 @@
 #include "../include/MyRotateDialog.h"
 #include "../include/MyReSizeDialog.h"
 
-class MyPanel: public wxScrolledWindow{
+class MyPanel: public wxScrolledCanvas{
 public:
     MyPanel( wxFrame *parent ) ;
     ~MyPanel() ;
     void OpenImage(wxString fileName);
-    void SaveImage(wxString fileName);
+    void SaveImage();
 
     void OnPaint(wxPaintEvent &WXUNUSED(event));
 
@@ -45,12 +45,12 @@ private:
 
     MyHistogram* histogram;
 
-    double imageScale; // pour zoomer sur l'image
+    double imageScale; // for zoom
 
     int m_width;
     int m_height;
 
-    wxFrame* parent;
+    wxFrame* parent; // for change statusbar on zoom
     void OnMouseWheel(wxMouseEvent& event);
 
 };

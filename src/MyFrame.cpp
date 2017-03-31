@@ -52,7 +52,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuFile->Append(ID_Open, wxT("Open...\tCtrl-O"));
 	Bind(wxEVT_MENU, &MyFrame::OnOpenImage, this, ID_Open);
 
-	menuFile->Append(ID_Save, wxT("Save...\tCtrl-S"));
+	menuFile->Append(ID_Save, wxT("Save As...\tCtrl-S"));
 	Bind(wxEVT_MENU, &MyFrame::OnSaveImage, this, ID_Save);
 
 	menuFile->Append(ID_Back, wxT("Undo...\tCtrl-Z"));
@@ -138,6 +138,7 @@ void MyFrame::OnAbout(wxCommandEvent& event){
 	wxLogMessage(wxT("Creator : Valentin Bouchet"));
 }
 
+// resize de la fenetre
 void MyFrame::OnResize(wxCommandEvent& event){
     wxSize size = this->GetSize();
     if (event.GetId() == ID_PlusLarge){ // plus
@@ -166,17 +167,14 @@ void MyFrame::OnMouse(wxEVT_MOTION& event){
 }*/
 
 void MyFrame::OnOpenImage(wxCommandEvent& event){
-	wxString filename = wxFileSelector("Choose a image to open", "", "", "", "PNG files (*.png)|*.png|JPEG files (*.jpeg)|*.jpeg|BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif");
+	wxString filename = wxFileSelector("Choose a image to open", "", "", "", "PNG files (*.png)|*.png|JPG files (*.jpg)|*.jpg|JPEG files (*.jpeg)|*.jpeg|BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif");
 	if (!filename.empty()){
             m_panel->OpenImage(filename);
     }
 }
 
 void MyFrame::OnSaveImage(wxCommandEvent& event){
-    wxString filename = wxSaveFileSelector("Save", "png", "test");
-    if (!filename.empty()){
-            m_panel->SaveImage(filename);
-    }
+        m_panel->SaveImage();
 }
 
 void MyFrame::OnProcessImage(wxCommandEvent& event){

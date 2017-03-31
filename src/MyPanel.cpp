@@ -4,7 +4,7 @@
 wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
 wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
 
-MyPanel::MyPanel(wxFrame *parent) : wxScrolledWindow(parent), m_image(NULL), histogram(NULL), parent(parent){
+MyPanel::MyPanel(wxFrame *parent) : wxScrolledCanvas(parent), m_image(NULL), histogram(NULL), parent(parent){
     imageScale = 1.0;
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
     Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this);
@@ -37,9 +37,12 @@ void MyPanel::OpenImage(wxString fileName){
     Refresh();
 }
 
-void MyPanel::SaveImage(wxString fileName){
+void MyPanel::SaveImage(){
     if (m_image != NULL){
-        m_image->SaveFile(fileName);
+        wxString filename = wxSaveFileSelector("Save", "*", "test");
+        if (!filename.empty()){
+            m_image->SaveFile(filename);
+        }
     }else{
         noImageOpen();
     }
@@ -49,7 +52,11 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     if (m_image != NULL){
         m_bitmap = MyImage(*m_image);
         wxPaintDC dc(this);
-        dc.SetUserScale(imageScale, imageScale);
+
+        DoPrepareDC(dc); // pour l'image soit actualisée quand on bouge les scroll
+
+        dc.SetUserScale(imageScale, imageScale); // pour le zoom
+
         dc.DrawBitmap(m_bitmap, 0, 0);
         histogram = new MyHistogram(m_image);
     }
@@ -289,7 +296,12 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
         }
 
         parent->GetStatusBar()->SetStatusText("Zoom : "+std::to_string((int) (imageScale*100))+" %");
-        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
+
+        wxPoint point = wxGetMousePosition();
+        int posX = 0; //point.x;
+        int posY = 0; //point.y;
+
+        SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale, posX, posY);
         Refresh();
     }
 }
