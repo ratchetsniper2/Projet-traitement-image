@@ -25,6 +25,12 @@ enum{
 	ID_ReSize,
 	ID_Threshold_V2,
 	ID_Luminosite,
+	ID_BLEU,
+	ID_ROUGE,
+	ID_NOIR,
+	ID_VERT
+
+
 };
 
 
@@ -54,9 +60,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	menuFile->Append(ID_Save, wxT("Save As...\tCtrl-S"));
 	Bind(wxEVT_MENU, &MyFrame::OnSaveImage, this, ID_Save);
-
-	menuFile->Append(ID_Back, wxT("Undo...\tCtrl-Z"));
-	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Back);
 
 	menuFile->AppendSeparator();
 
@@ -120,9 +123,24 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	menuBar->Append( menuProcess, wxT("Process" ));
 
+    //menu couleur
+    wxMenu *menuDessin = new wxMenu ;
 
-	SetMenuBar(menuBar) ;
+    menuDessin->Append(ID_BLEU, wxT("Bleu..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_BLEU);
 
+	menuDessin->Append(ID_NOIR, wxT("Noir..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_NOIR);
+
+	menuDessin->Append(ID_ROUGE, wxT("Rouge..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_ROUGE);
+
+	menuDessin->Append(ID_VERT, wxT("Vert..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_VERT);
+
+	menuBar->Append( menuDessin, wxT("Dessin" ));
+
+    SetMenuBar(menuBar) ;
 
 	wxStatusBar *statusBar = this->CreateStatusBar();
 	statusBar->SetStatusText(wxT(""));
@@ -217,21 +235,25 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         case ID_Nbcolor:
             m_panel->Nbcolor();
             break;
-
         case ID_EnhenceContrast:
             m_panel->EnhenceContrast();
             break;
-
         case ID_Threshold_V2:
             m_panel->ThresholdImage();
-            break;
-
         case ID_Luminosite:
             m_panel->Luminosite();
             break;
-
-        case ID_Back:
-            m_panel->BackTraitment();
+        case ID_BLEU:
+            m_panel->SetCouleur("BLUE");
+            break;
+        case ID_NOIR:
+            m_panel->SetCouleur("BLACK");
+            break;
+        case ID_ROUGE:
+            m_panel->SetCouleur("RED");
+            break;
+        case ID_VERT:
+            m_panel->SetCouleur("GREEN");
             break;
 
         case ID_ReSize:
