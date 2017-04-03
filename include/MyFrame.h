@@ -1,7 +1,7 @@
 #ifndef MYFRAME_H
 #define MYFRAME_H
 
-#include "MyPanel.h"
+#include "../include/MyPanel.h"
 
 class MyFrame: public wxFrame{
 public:
@@ -23,7 +23,11 @@ private:
 
 	void OnProcessImage(wxCommandEvent& event);
 
+
+	void OnBack();
+
 	//void OnMouse(wxEVT_MOTION& event);
+
 };
 
 #endif // MYFRAME_H

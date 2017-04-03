@@ -1,4 +1,4 @@
-#include "MyLuminositeDialog.h"
+#include "../include/MyLuminositeDialog.h"
 
 
 

@@ -1,18 +1,19 @@
 #ifndef MYPANEL_H
 #define MYPANEL_H
 
-#include "MyHistogram.h"
-#include "MyImage.h"
-#include "MyThresholdDialog.h"
-#include "MyLuminositeDialog.h"
-#include "MyRotateDialog.h"
+#include "../include/MyHistogram.h"
+#include "../include/MyImage.h"
+#include "../include/MyThresholdDialog.h"
+#include "../include/MyLuminositeDialog.h"
+#include "../include/MyRotateDialog.h"
+#include "../include/MyReSizeDialog.h"
 
-class MyPanel: public wxPanel{
+class MyPanel: public wxScrolledCanvas{
 public:
-    MyPanel( wxWindow *parent ) ;
+    MyPanel( wxFrame *parent ) ;
     ~MyPanel() ;
     void OpenImage(wxString fileName);
-    void SaveImage(wxString fileName);
+    void SaveImage();
 
     void OnPaint(wxPaintEvent &WXUNUSED(event));
 
@@ -34,6 +35,8 @@ public:
     void OnMouse(wxMouseEvent& event);
     void SetCouleur(const char* couleur);
 
+    void ReSize();
+
 private:
     MyImage *m_image;		// used to load and process the image
     wxBitmap m_bitmap;	// used to display the image
@@ -43,9 +46,14 @@ private:
     int x_mouse;
     int y_mouse;
     const char* couleur;
+
+    double imageScale; // for zoom
     int m_width;
     int m_height;
     DECLARE_EVENT_TABLE()
+
+    wxFrame* parent; // for change statusbar on zoom
+    void OnMouseWheel(wxMouseEvent& event);
 
 };
 

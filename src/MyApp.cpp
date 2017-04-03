@@ -1,4 +1,4 @@
-#include "MyApp.h"
+#include "../include/MyApp.h"
 
 bool MyApp::OnInit(){
     wxInitAllImageHandlers();

@@ -1,5 +1,6 @@
 #include "../include/MyFrame.h"
 #include <time.h>
+#include <wx/event.h>
 
 // énumération. Elle gère la numérotation automatiquement
 enum{
@@ -20,12 +21,16 @@ enum{
 	ID_Posterize,
 	ID_Nbcolor,
 	ID_EnhenceContrast,
+	ID_Back,
+	ID_ReSize,
 	ID_Threshold_V2,
 	ID_Luminosite,
 	ID_BLEU,
 	ID_ROUGE,
 	ID_NOIR,
 	ID_VERT
+
+
 };
 
 
@@ -53,7 +58,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuFile->Append(ID_Open, wxT("Open...\tCtrl-O"));
 	Bind(wxEVT_MENU, &MyFrame::OnOpenImage, this, ID_Open);
 
-	menuFile->Append(ID_Save, wxT("Save...\tCtrl-S"));
+	menuFile->Append(ID_Save, wxT("Save As...\tCtrl-S"));
 	Bind(wxEVT_MENU, &MyFrame::OnSaveImage, this, ID_Save);
 
 	menuFile->AppendSeparator();
@@ -107,6 +112,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuProcess->Append(ID_EnhenceContrast, wxT("EnhenceContrast...\tCtrl-E"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_EnhenceContrast);
 
+	menuProcess->Append(ID_ReSize, wxT("ReSize..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_ReSize);
+
 	menuProcess->Append(ID_Threshold_V2, wxT("Threshold_V2..."));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Threshold_V2);
 
@@ -145,9 +153,10 @@ void MyFrame::OnHello(wxCommandEvent& event){
 }
 
 void MyFrame::OnAbout(wxCommandEvent& event){
-	wxLogMessage(wxT("Creator : Valentin Bouchet"));
+	wxLogMessage(wxT("Creator :\nValentin Bouchet\nGuerre-Chaley Mathieu"));
 }
 
+// resize de la fenetre
 void MyFrame::OnResize(wxCommandEvent& event){
     wxSize size = this->GetSize();
     if (event.GetId() == ID_PlusLarge){ // plus
@@ -176,17 +185,14 @@ void MyFrame::OnMouse(wxEVT_MOTION& event){
 }*/
 
 void MyFrame::OnOpenImage(wxCommandEvent& event){
-	wxString filename = wxFileSelector("Choose a image to open", "", "", "", "PNG files (*.png)|*.png|JPEG files (*.jpeg)|*.jpeg|BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif");
+	wxString filename = wxFileSelector("Choose a image to open", "", "", "", "PNG files (*.png)|*.png|JPG files (*.jpg)|*.jpg|JPEG files (*.jpeg)|*.jpeg|BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif");
 	if (!filename.empty()){
             m_panel->OpenImage(filename);
     }
 }
 
 void MyFrame::OnSaveImage(wxCommandEvent& event){
-    wxString filename = wxSaveFileSelector("Save", "png", "test");
-    if (!filename.empty()){
-            m_panel->SaveImage(filename);
-    }
+    m_panel->SaveImage();
 }
 
 void MyFrame::OnProcessImage(wxCommandEvent& event){
@@ -211,7 +217,7 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
             clock_t t; t = clock();
             m_panel->Negative();
             t = clock() - t;
-            this->GetStatusBar()->SetStatusText("Temps de traitement : "+std::to_string(((float)t)/CLOCKS_PER_SEC));
+            GetStatusBar()->SetStatusText("Temps de traitement : "+std::to_string(((float)t)/CLOCKS_PER_SEC));
             break;
 
         case ID_Desaturate:
@@ -248,6 +254,10 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
             break;
         case ID_VERT:
             m_panel->SetCouleur("GREEN");
+            break;
+
+        case ID_ReSize:
+            m_panel->ReSize();
             break;
     }
 }

@@ -1,7 +1,7 @@
 #ifndef MYHISTOGRAM_H
 #define MYHISTOGRAM_H
 
-#include "MyImage.h"
+#include "../include/MyImage.h"
 
 class MyHistogram{
     public:
