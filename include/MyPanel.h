@@ -31,19 +31,21 @@ public:
     void Luminosite();
     void Nbcolor();
     void EnhenceContrast();
-
-    void SaveImageBeforeTraitment();
-    void BackTraitment();
+    void OnMouse(wxMouseEvent& event);
+    void SetCouleur(const char* couleur);
 
 private:
     MyImage *m_image;		// used to load and process the image
-    MyImage m_imageCopie;	// data befor last traitment
     wxBitmap m_bitmap;	// used to display the image
 
     MyHistogram* histogram;
 
+    int x_mouse;
+    int y_mouse;
+    const char* couleur;
     int m_width;
     int m_height;
+    DECLARE_EVENT_TABLE()
 
 };
 

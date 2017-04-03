@@ -21,10 +21,7 @@ private:
 	void OnOpenImage(wxCommandEvent& event);
 	void OnSaveImage(wxCommandEvent& event);
 
-	void OnProcessImage(wxCommandEvent& event);	//void OnMouse(wxEVT_MOTION& event);
-
-
-	void OnBack();
+	void OnProcessImage(wxCommandEvent& event);
 
 	//void OnMouse(wxEVT_MOTION& event);
 };

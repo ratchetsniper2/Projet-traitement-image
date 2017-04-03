@@ -4,6 +4,11 @@
 wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
 wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
 
+
+BEGIN_EVENT_TABLE(MyPanel, wxPanel)
+  EVT_LEFT_DOWN(MyPanel::OnMouse)
+END_EVENT_TABLE()
+
 MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent), m_image(NULL), histogram(NULL){
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
     Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
@@ -22,7 +27,6 @@ void MyPanel::OpenImage(wxString fileName){
         delete(histogram);
     }
     m_image = new MyImage(fileName);
-    SaveImageBeforeTraitment();
     histogram = new MyHistogram(m_image);
 
     m_width = m_image->GetWidth();
@@ -45,12 +49,12 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
         wxPaintDC dc(this);
         dc.DrawBitmap(m_bitmap, 0, 0);
         histogram = new MyHistogram(m_image);
+
     }
 }
 
 void MyPanel::MirrorImage(bool horizontal){
     if (m_image != NULL){
-        SaveImageBeforeTraitment();
         *m_image = m_image->Mirror(horizontal);
 
         Refresh();
@@ -61,8 +65,7 @@ void MyPanel::MirrorImage(bool horizontal){
 
 void MyPanel::BlurImage(){
     if (m_image != NULL){
-        SaveImageBeforeTraitment();
-        *m_image = m_image->Blur(1);
+       *m_image = m_image->Blur(1);
 
         Refresh();
     }else{
@@ -75,7 +78,6 @@ void MyPanel::RotateImage(){
 
         MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxT("Rotate"), wxDefaultPosition, wxSize(200,200));
         if (dlg->ShowModal() == wxID_OK){
-            SaveImageBeforeTraitment();
             if (dlg->m_radioBox->GetSelection() == 0){
                 *m_image = m_image->Rotate90();
             }else if (dlg->m_radioBox->GetSelection() == 1){
@@ -98,7 +100,6 @@ void MyPanel::RotateImage(){
 
 void MyPanel::Negative(){
     if (m_image != NULL){
-        SaveImageBeforeTraitment();
         m_image->Negative();
         Refresh();
     }else{
@@ -108,7 +109,6 @@ void MyPanel::Negative(){
 
 void MyPanel::Desaturate(){
     if (m_image != NULL){
-        SaveImageBeforeTraitment();
         m_image->Desaturate();
         Refresh();
     }else{
@@ -120,7 +120,6 @@ void MyPanel::Threshold(){
     if (m_image != NULL){
         MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
         if (dlg->ShowModal() == wxID_OK){
-            SaveImageBeforeTraitment();
             m_image->Threshold(dlg->m_threshold->GetValue());
             //free(dlg);
             Refresh();
@@ -132,7 +131,6 @@ void MyPanel::Threshold(){
 
 void MyPanel::Posterize(){
     if (m_image != NULL){
-        SaveImageBeforeTraitment();
         m_image->Posterize(64);
         Refresh();
     }else{
@@ -155,7 +153,6 @@ void MyPanel::EnhenceContrast(){
         int maxValue = 0;
         histogram->getBorderValues(&minValue, &maxValue);
 
-        SaveImageBeforeTraitment();
         m_image->EnhenceContrast(minValue, maxValue);
         Refresh();
     }else{
@@ -173,7 +170,6 @@ void MyPanel::ThresholdImage(){
 
         }
         else{
-            BackTraitment();
             //annuler la transformation
         }
     }else{
@@ -191,9 +187,7 @@ void MyPanel::OnThresholdImage(wxCommandEvent& event){
 
 void MyPanel::OnLuminosite(wxCommandEvent& event){
 
-            BackTraitment();
-            SaveImageBeforeTraitment();
-
+            //remmettre l'image d'origine avant de faire la transformation
             m_image->Luminosite(event.GetSelection());
             Refresh();
 }
@@ -207,32 +201,32 @@ if (m_image != NULL){
 
         }
         else{
-            BackTraitment();
             //annuler la transformation
         }
     }else{
         noImageOpen();
 
     }
+
+}
+void MyPanel::OnMouse(wxMouseEvent& event){
+int mx = wxGetMousePosition().x - this->GetScreenPosition().x;
+int my = wxGetMousePosition().y - this->GetScreenPosition().y;
+wxPaintDC dc(this);
+if(couleur != nullptr){
+  wxPen MonCrayon(couleur,5,wxSOLID);
+    dc.SetPen(MonCrayon);
 }
 
-void MyPanel::SaveImageBeforeTraitment(){
-    m_imageCopie = m_image->Copy();
+if(x_mouse == 0){
+    x_mouse = mx;
+    y_mouse = my;
+}else{
+dc.DrawLine(x_mouse,y_mouse,mx,my);
+    x_mouse = 0;
+    y_mouse = 0;
 }
-
-void MyPanel::BackTraitment(){
-    if (m_image != NULL){
-        MyImage temp = m_image->Copy();
-        *m_image = m_imageCopie;
-        m_imageCopie = temp;
-
-        // redimention ----
-        m_width = m_image->GetWidth();
-        m_height = m_image->GetHeight();
-        GetParent()->SetClientSize(m_width, m_height);
-
-        Refresh();
-    }else{
-        noImageOpen();
-    }
+}
+void MyPanel::SetCouleur(const char* coul){
+couleur = coul;
 }
