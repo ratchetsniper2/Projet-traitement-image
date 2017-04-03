@@ -1,6 +1,6 @@
-#include "../include/MyRotateDialog.h"
+#include "MyRotateDialog.h"
 
-MyRotateDialog::MyRotateDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog( parent, id, title, pos, size, style){
+/*MyRotateDialog::MyRotateDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog( parent, id, title, pos, size, style){
     SetClientSize(wxSize(200,150));
 
     wxString __wxRadioBoxChoices_1[3] =
@@ -16,4 +16,4 @@ MyRotateDialog::MyRotateDialog(wxWindow* parent, wxWindowID id, const wxString& 
 }
 
 MyRotateDialog::~MyRotateDialog(){
-}
+}*/

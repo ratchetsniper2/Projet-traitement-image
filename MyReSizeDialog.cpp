@@ -1,10 +1,10 @@
-#include "../include/MyReSizeDialog.h"
+#include "MyReSizeDialog.h"
 
 MyReSizeDialog::MyReSizeDialog(int width, int height, wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog( parent, id, title, pos, size, style){
     SetClientSize(wxSize(200,150));
 
+    // text validator pour autoriser que les chifres
     wxTextValidator validator(wxFILTER_INCLUDE_CHAR_LIST);
-
     wxArrayString list;
     wxString valChar(wxT("0123456789"));
     size_t sizeValChar = valChar.Length();

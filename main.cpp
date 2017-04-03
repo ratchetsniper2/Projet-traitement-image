@@ -1,3 +1,3 @@
-#include "include/MyApp.h"
+#include "MyApp.h"
 
 IMPLEMENT_APP(MyApp)

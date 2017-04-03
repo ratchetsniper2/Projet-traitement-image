@@ -1,7 +1,7 @@
 #ifndef MYAPP_H
 #define MYAPP_H
 
-#include "../include/MyFrame.h"
+#include "MyFrame.h"
 
 class MyApp: public wxApp{
 public:

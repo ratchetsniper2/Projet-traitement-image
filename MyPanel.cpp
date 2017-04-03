@@ -1,47 +1,49 @@
-#include "../include/MyPanel.h"
+#include "MyPanel.h"
 
-
-wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
-wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
-
-
-BEGIN_EVENT_TABLE(MyPanel, wxPanel)
-  EVT_LEFT_DOWN(MyPanel::OnMouse)
-END_EVENT_TABLE()
-
+// Evenement pour traitement dynamique
+wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent); // seuillage
+wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent); // luminosite
 
 MyPanel::MyPanel(wxFrame *parent) : wxScrolledCanvas(parent), m_image(NULL), histogram(NULL), parent(parent){
     imageScale = 1.0;
+
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
     Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this);
     Bind(EVENEMENT_LUMINOSITE, &MyPanel::OnLuminosite, this);
-
     Bind(wxEVT_MOUSEWHEEL, &MyPanel::OnMouseWheel, this);
+    Bind(wxEVT_LEFT_DOWN, &MyPanel::OnMouse, this);
 
 }
 
 MyPanel::~MyPanel(){}
 
+// message d'erreur tentative de traitement sans avoir ouver d'image
 void MyPanel::noImageOpen(){
     wxLogMessage(wxT("No image open  ..."));
 }
 
+// ouvrir une image
 void MyPanel::OpenImage(wxString fileName){
     if (m_image != NULL){
         delete(m_image);
         delete(histogram);
         imageScale = 1.0;
     }
+
     m_image = new MyImage(fileName);
+    SaveImageBeforeTraitment();
+
     histogram = new MyHistogram(m_image);
 
     m_width = m_image->GetWidth();
     m_height = m_image->GetHeight();
+
     SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
     GetParent()->SetClientSize(m_width, m_height);
     Refresh();
 }
 
+// sauvegarde de l'image
 void MyPanel::SaveImage(){
     if (m_image != NULL){
         wxString filename = wxSaveFileSelector("Save", "", "");
@@ -68,8 +70,10 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     }
 }
 
+// Miroire
 void MyPanel::MirrorImage(bool horizontal){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         *m_image = m_image->Mirror(horizontal);
 
         Refresh();
@@ -78,9 +82,11 @@ void MyPanel::MirrorImage(bool horizontal){
     }
 }
 
+// Blur
 void MyPanel::BlurImage(){
     if (m_image != NULL){
-       *m_image = m_image->Blur(1);
+        SaveImageBeforeTraitment();
+        *m_image = m_image->Blur(1);
 
         Refresh();
     }else{
@@ -88,11 +94,13 @@ void MyPanel::BlurImage(){
     }
 }
 
+// Rotation d'image
 void MyPanel::RotateImage(){
     if (m_image != NULL){
 
         MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxT("Rotate"), wxDefaultPosition, wxSize(200,200));
         if (dlg->ShowModal() == wxID_OK){
+            SaveImageBeforeTraitment();
             if (dlg->m_radioBox->GetSelection() == 0){
                 *m_image = m_image->Rotate90();
             }else if (dlg->m_radioBox->GetSelection() == 1){
@@ -114,8 +122,10 @@ void MyPanel::RotateImage(){
     }
 }
 
+// Négatif
 void MyPanel::Negative(){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         m_image->Negative();
         Refresh();
     }else{
@@ -123,8 +133,10 @@ void MyPanel::Negative(){
     }
 }
 
+// Désaturation
 void MyPanel::Desaturate(){
     if (m_image != NULL){
+        SaveImageBeforeTraitment();
         m_image->Desaturate();
         Refresh();
     }else{
@@ -132,19 +144,7 @@ void MyPanel::Desaturate(){
     }
 }
 
-void MyPanel::Threshold(){
-    if (m_image != NULL){
-        MyThresholdDialog *dlg = new MyThresholdDialog(false, this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
-        if (dlg->ShowModal() == wxID_OK){
-            m_image->Threshold(dlg->m_threshold->GetValue());
-            //free(dlg);
-            Refresh();
-        }
-    }else{
-        noImageOpen();
-    }
-}
-
+// Posterisation
 void MyPanel::Posterize(){
     if (m_image != NULL){
 
@@ -158,6 +158,7 @@ void MyPanel::Posterize(){
     }
 }
 
+// contage du nombre de couleur
 void MyPanel::Nbcolor(){
     if (m_image != NULL){
         int nbColor = m_image->Nbcolor();
@@ -167,12 +168,14 @@ void MyPanel::Nbcolor(){
     }
 }
 
+// amélioration du contrast
 void MyPanel::EnhenceContrast(){
     if (m_image != NULL){
         int minValue = m_image->GetWidth()*m_image->GetHeight();
         int maxValue = 0;
         histogram->getBorderValues(&minValue, &maxValue);
 
+        SaveImageBeforeTraitment();
         m_image->EnhenceContrast(minValue, maxValue);
         Refresh();
     }else{
@@ -180,17 +183,29 @@ void MyPanel::EnhenceContrast(){
     }
 }
 
+// seuillage de l'image
+void MyPanel::Threshold(){
+    if (m_image != NULL){
+        MyThresholdDialog *dlg = new MyThresholdDialog(false, this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
+        if (dlg->ShowModal() == wxID_OK){
+            SaveImageBeforeTraitment();
+            m_image->Threshold(dlg->m_threshold->GetValue());
+            Refresh();
+        }
+    }else{
+        noImageOpen();
+    }
+}
 
+// seuillage de l'image dynamique
 void MyPanel::ThresholdImage(){
     if (m_image != NULL){
 
         SaveImageBeforeTraitment();
         MyThresholdDialog *dlg = new MyThresholdDialog(true, this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140));
 
-        if (dlg->ShowModal() == wxID_OK){
-
-        }
-        else{
+        if (dlg->ShowModal() != wxID_OK){
+            BackTraitment();
             //annuler la transformation
         }
     }else{
@@ -199,33 +214,26 @@ void MyPanel::ThresholdImage(){
     }
 }
 
+// pour un changement dynamique
 void MyPanel::OnThresholdImage(wxCommandEvent& event){
 
-            BackTraitment();
-            SaveImageBeforeTraitment();
+    //remmettre l'image d'origine avant de faire la transformation
+    BackTraitment();
+    SaveImageBeforeTraitment();
 
-            //remmettre l'image d'origine avant de faire la transformation
-            m_image->Threshold(event.GetSelection());
-            Refresh();
+    m_image->Threshold(event.GetSelection());
+    Refresh();
 }
 
-void MyPanel::OnLuminosite(wxCommandEvent& event){
-
-            //remmettre l'image d'origine avant de faire la transformation
-            m_image->Luminosite(event.GetSelection());
-            Refresh();
-}
-
+// changer la luminosité de l'image
 void MyPanel::Luminosite(){
 if (m_image != NULL){
 
         SaveImageBeforeTraitment();
         MyLuminositeDialog *dlg = new MyLuminositeDialog(this, -1, wxT("Luminosité"), wxDefaultPosition, wxSize(250,140));
 
-        if (dlg->ShowModal() == wxID_OK){
-
-        }
-        else{
+        if (dlg->ShowModal() != wxID_OK){
+            BackTraitment();
             //annuler la transformation
         }
     }else{
@@ -234,28 +242,50 @@ if (m_image != NULL){
     }
 
 }
+
+// pour un changement dynamique
+void MyPanel::OnLuminosite(wxCommandEvent& event){
+
+    //remmettre l'image d'origine avant de faire la transformation
+    BackTraitment();
+    SaveImageBeforeTraitment();
+
+    m_image->Luminosite(event.GetSelection());
+    Refresh();
+}
+
+// au click souris
 void MyPanel::OnMouse(wxMouseEvent& event){
-int mx = wxGetMousePosition().x - this->GetScreenPosition().x;
-int my = wxGetMousePosition().y - this->GetScreenPosition().y;
-wxPaintDC dc(this);
-if(couleur != nullptr){
-  wxPen MonCrayon(couleur,5,wxSOLID);
-    dc.SetPen(MonCrayon);
-}
+    int mx = wxGetMousePosition().x - this->GetScreenPosition().x;
+    int my = wxGetMousePosition().y - this->GetScreenPosition().y;
+    wxPaintDC dc(this);
+    if(couleur != NULL){
+      wxPen MonCrayon(couleur,5,wxSOLID);
+        dc.SetPen(MonCrayon);
+    }
 
 
-if(x_mouse == 0){
-    x_mouse = mx;
-    y_mouse = my;
-}else{
-dc.DrawLine(x_mouse,y_mouse,mx,my);
-    x_mouse = 0;
-    y_mouse = 0;
+    if(x_mouse == 0){
+        x_mouse = mx;
+        y_mouse = my;
+    }else{
+    dc.DrawLine(x_mouse,y_mouse,mx,my);
+        x_mouse = 0;
+        y_mouse = 0;
+    }
 }
-}
+
+// changer la couleur du pinceau
 void MyPanel::SetCouleur(const char* coul){
-couleur = coul;
+    couleur = coul;
+}
 
+// sauvegarder l'image avant le traitement
+void MyPanel::SaveImageBeforeTraitment(){
+    m_imageCopie = m_image->Copy();
+}
+
+// annuler le dernier traitement
 void MyPanel::BackTraitment(){
     if (m_image != NULL){
         MyImage temp = m_image->Copy();
@@ -277,6 +307,7 @@ void MyPanel::BackTraitment(){
 
 }
 
+// redimention d'image
 void MyPanel::ReSize(){
     if (m_image != NULL){
 
@@ -304,7 +335,7 @@ void MyPanel::ReSize(){
 // pour le zoom (ctrl + molette)
 void MyPanel::OnMouseWheel(wxMouseEvent& event){
     if (m_image != NULL && event.ControlDown()){
-        double incrScale = 0.05;
+        double incrScale = 0.05; // incrémentation du zoom "5%"
 
         // changement du zoom
         if (event.GetWheelRotation() > 0){
@@ -349,7 +380,7 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
                 }
         }
 
-        // actualisation de l'image
+        // actualisation de la fenetre
         parent->GetStatusBar()->SetStatusText("Zoom : "+std::to_string((int) (imageScale*100))+" %");
         SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale, GetViewStart().x+deltaPosXScroll, GetViewStart().y+deltaPosYScroll);
         Refresh();

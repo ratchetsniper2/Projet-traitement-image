@@ -1,12 +1,12 @@
 #ifndef MYPANEL_H
 #define MYPANEL_H
 
-#include "../include/MyHistogram.h"
-#include "../include/MyImage.h"
-#include "../include/MyThresholdDialog.h"
-#include "../include/MyLuminositeDialog.h"
-#include "../include/MyRotateDialog.h"
-#include "../include/MyReSizeDialog.h"
+#include "MyHistogram.h"
+#include "MyImage.h"
+#include "MyThresholdDialog.h"
+#include "MyLuminositeDialog.h"
+#include "MyRotateDialog.h"
+#include "MyReSizeDialog.h"
 
 class MyPanel: public wxScrolledCanvas{
 public:
@@ -35,10 +35,14 @@ public:
     void OnMouse(wxMouseEvent& event);
     void SetCouleur(const char* couleur);
 
+    void SaveImageBeforeTraitment();
+    void BackTraitment();
+
     void ReSize();
 
 private:
     MyImage *m_image;		// used to load and process the image
+    MyImage m_imageCopie;	// data befor last traitment
     wxBitmap m_bitmap;	// used to display the image
 
     MyHistogram* histogram;
@@ -50,7 +54,6 @@ private:
     double imageScale; // for zoom
     int m_width;
     int m_height;
-    DECLARE_EVENT_TABLE()
 
     wxFrame* parent; // for change statusbar on zoom
     void OnMouseWheel(wxMouseEvent& event);

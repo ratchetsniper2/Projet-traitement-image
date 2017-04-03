@@ -1,4 +1,4 @@
-#include "../include/MyFrame.h"
+#include "MyFrame.h"
 #include <time.h>
 #include <wx/event.h>
 
@@ -61,6 +61,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuFile->Append(ID_Save, wxT("Save As...\tCtrl-S"));
 	Bind(wxEVT_MENU, &MyFrame::OnSaveImage, this, ID_Save);
 
+	menuFile->Append(ID_Back, wxT("Undo...\tCtrl-Z"));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Back);
+
 	menuFile->AppendSeparator();
 
 	menuFile->Append(ID_About, wxT("About...\tCtrl-A"));
@@ -103,6 +106,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuProcess->Append(ID_Threshold, wxT("Threshold...\tCtrl-T"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Threshold);
 
+	menuProcess->Append(ID_Threshold_V2, wxT("Threshold_V2..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Threshold_V2);
+
 	menuProcess->Append(ID_Posterize, wxT("Posterize...\tCtrl-P"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Posterize);
 
@@ -115,15 +121,13 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuProcess->Append(ID_ReSize, wxT("ReSize..."));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_ReSize);
 
-	menuProcess->Append(ID_Threshold_V2, wxT("Threshold_V2..."));
-	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Threshold_V2);
-
 	menuProcess->Append(ID_Luminosite, wxT("Luminosité..."));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Luminosite);
 
 	menuBar->Append( menuProcess, wxT("Process" ));
 
-    //menu couleur
+    //menu couleur --------------------------------------------------------
+
     wxMenu *menuDessin = new wxMenu ;
 
     menuDessin->Append(ID_BLEU, wxT("Bleu..."));
@@ -173,16 +177,12 @@ void MyFrame::OnResize(wxCommandEvent& event){
 }
 
 void MyFrame::OnExit(wxCommandEvent& event){
-	Close( true );
+	Close(true);
 }
 
 void MyFrame::OnEnCours(wxCommandEvent& event){
 	wxLogMessage(wxT("En cours de construction ..."));
 }
-/*
-void MyFrame::OnMouse(wxEVT_MOTION& event){
-    //this->SetStatusText(wxT("test"));
-}*/
 
 void MyFrame::OnOpenImage(wxCommandEvent& event){
 	wxString filename = wxFileSelector("Choose a image to open", "", "", "", "PNG files (*.png)|*.png|JPG files (*.jpg)|*.jpg|JPEG files (*.jpeg)|*.jpeg|BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif");
@@ -228,6 +228,10 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
             m_panel->Threshold();
             break;
 
+        case ID_Threshold_V2:
+            m_panel->ThresholdImage();
+            break;
+
         case ID_Posterize:
             m_panel->Posterize();
             break;
@@ -238,20 +242,27 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         case ID_EnhenceContrast:
             m_panel->EnhenceContrast();
             break;
-        case ID_Threshold_V2:
-            m_panel->ThresholdImage();
+
         case ID_Luminosite:
             m_panel->Luminosite();
             break;
+
+        case ID_Back:
+            m_panel->BackTraitment();
+            break;
+
         case ID_BLEU:
             m_panel->SetCouleur("BLUE");
             break;
+
         case ID_NOIR:
             m_panel->SetCouleur("BLACK");
             break;
+
         case ID_ROUGE:
             m_panel->SetCouleur("RED");
             break;
+
         case ID_VERT:
             m_panel->SetCouleur("GREEN");
             break;

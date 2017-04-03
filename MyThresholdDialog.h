@@ -3,7 +3,6 @@
 
 #include <wx/wx.h>
 wxDECLARE_EVENT(MON_EVENEMENT, wxCommandEvent);
-wxDECLARE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent);
 
 class MyThresholdDialog : public wxDialog{
     public:
@@ -12,9 +11,7 @@ class MyThresholdDialog : public wxDialog{
             const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
         virtual ~MyThresholdDialog();
         void OnScroll( wxScrollEvent& event );
-        void OnScrollLuminosite( wxScrollEvent& event );
         wxSlider* m_threshold;
-        wxSlider* m_luminosite;
 
     protected:
 

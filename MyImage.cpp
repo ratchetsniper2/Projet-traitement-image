@@ -1,4 +1,4 @@
-#include "../include/MyImage.h"
+#include "MyImage.h"
 
 MyImage::MyImage(int largeur, int hauteur) : wxImage(largeur, hauteur){
 }
