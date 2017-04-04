@@ -256,22 +256,41 @@ void MyPanel::OnLuminosite(wxCommandEvent& event){
 
 // au click souris
 void MyPanel::OnMouse(wxMouseEvent& event){
-    int mx = wxGetMousePosition().x - this->GetScreenPosition().x;
-    int my = wxGetMousePosition().y - this->GetScreenPosition().y;
-    wxPaintDC dc(this);
-    if(couleur != NULL){
-      wxPen MonCrayon(couleur,5,wxSOLID);
-        dc.SetPen(MonCrayon);
-    }
+    if (m_image != NULL){
+        // modification pour récupérer la vrai position du curseur sur l'image en fonction du zoom
+        wxPoint point = ScreenToClient(wxGetMousePosition());
+        int mx = (GetViewStart().x + point.x) * (1/imageScale);
+        int my = (GetViewStart().y + point.y) * (1/imageScale);
+        // -----------------------------------------------------------------
+
+        // modification pour draw sur l'image
+        wxMemoryDC dc;
+        dc.SelectObject(m_bitmap);
+        // ----------------------------------
+
+        if(couleur != NULL){
+            wxPen MonCrayon(couleur,5,wxSOLID);
+            dc.SetPen(MonCrayon);
+        }
 
 
-    if(x_mouse == 0){
-        x_mouse = mx;
-        y_mouse = my;
-    }else{
-    dc.DrawLine(x_mouse,y_mouse,mx,my);
-        x_mouse = 0;
-        y_mouse = 0;
+        if(x_mouse == 0){
+            x_mouse = mx;
+            y_mouse = my;
+        }else{
+            SaveImageBeforeTraitment();
+
+            dc.DrawLine(x_mouse,y_mouse,mx,my);
+            x_mouse = 0;
+            y_mouse = 0;
+
+            // modification pour draw sur l'image
+            delete(m_image);
+            m_image = new MyImage(m_bitmap.ConvertToImage());
+            Refresh();
+            // ----------------------------------
+        }
+
     }
 }
 
