@@ -354,7 +354,14 @@ void MyPanel::ReSize(){
 // pour le zoom (ctrl + molette)
 void MyPanel::OnMouseWheel(wxMouseEvent& event){
     if (m_image != NULL && event.ControlDown()){
+
         double incrScale = 0.05; // incrémentation du zoom "5%"
+        if (imageScale > 2){
+            incrScale = 0.1;
+            if (imageScale > 5){
+                incrScale = 0.2;
+            }
+        }
 
         // changement du zoom
         if (event.GetWheelRotation() > 0){

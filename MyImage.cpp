@@ -54,6 +54,7 @@ void MyImage::Threshold(int seuil){
     }
 }
 
+// fonctionne normalement pour n'import quelle 8^i valeur
 void MyImage::Posterize(int nbColor){
     unsigned char* data = this->GetData();
 
@@ -78,6 +79,7 @@ void MyImage::Posterize(int nbColor){
 }
 
 int MyImage::Nbcolor(){
+    // ancienne version moin performante
     /*unsigned char* data = this->GetData();
     std::set<int> setPx;
 
