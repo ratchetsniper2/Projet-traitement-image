@@ -188,6 +188,7 @@ void MyFrame::OnOpenImage(wxCommandEvent& event){
 	wxString filename = wxFileSelector("Choose a image to open", "", "", "", "PNG files (*.png)|*.png|JPG files (*.jpg)|*.jpg|JPEG files (*.jpeg)|*.jpeg|BMP files (*.bmp)|*.bmp|GIF files (*.gif)|*.gif");
 	if (!filename.empty()){
             m_panel->OpenImage(filename);
+            GetStatusBar()->SetStatusText("");
     }
 }
 

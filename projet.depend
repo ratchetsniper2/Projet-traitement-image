@@ -1677,7 +1677,7 @@
 1491211253 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyApp.cpp
 	"MyApp.h"
 
-1491215852 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyFrame.cpp
+1491384012 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyFrame.cpp
 	"MyFrame.h"
 	<time.h>
 	<wx/event.h>
@@ -1685,13 +1685,13 @@
 1491211276 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyHistogram.cpp
 	"MyHistogram.h"
 
-1491211281 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyImage.cpp
+1491384803 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyImage.cpp
 	"MyImage.h"
 
-1491213658 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyLuminositeDialog.cpp
+1491384999 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyLuminositeDialog.cpp
 	"MyLuminositeDialog.h"
 
-1491296022 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.cpp
+1491383788 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.cpp
 	"MyPanel.h"
 
 1491216098 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyReSizeDialog.cpp

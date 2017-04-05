@@ -58,10 +58,10 @@ void MyPanel::SaveImage(){
 void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     if (m_image != NULL){
         m_bitmap = MyImage(*m_image);
+
         wxPaintDC dc(this);
 
-        DoPrepareDC(dc); // pour l'image soit actualisée quand on bouge les scroll
-
+        DoPrepareDC(dc); // prépare l'image pour etre afficher dans une fenetre scrollable
         dc.SetUserScale(imageScale, imageScale); // pour le zoom
 
         dc.DrawBitmap(m_bitmap, 0, 0);
@@ -254,7 +254,7 @@ void MyPanel::OnLuminosite(wxCommandEvent& event){
     Refresh();
 }
 
-// au click souris
+// fonction dession : au click souris
 void MyPanel::OnMouse(wxMouseEvent& event){
     if (m_image != NULL){
         // modification pour récupérer la vrai position du curseur sur l'image en fonction du zoom
@@ -330,11 +330,23 @@ void MyPanel::BackTraitment(){
 void MyPanel::ReSize(){
     if (m_image != NULL){
 
-        MyReSizeDialog *dlg = new MyReSizeDialog(m_image->GetWidth() ,m_image->GetHeight() , this, -1, wxT("ReSize"), wxDefaultPosition, wxSize(200,200));
+        int xSize = m_image->GetWidth();
+        int ySize = m_image->GetHeight();
+
+        MyReSizeDialog *dlg = new MyReSizeDialog(xSize, ySize, this, -1, wxT("ReSize"), wxDefaultPosition, wxSize(200,200));
         if (dlg->ShowModal() == wxID_OK){
             SaveImageBeforeTraitment();
-            int xSize = wxAtoi(dlg->m_widthSize->GetValue());
-            int ySize = wxAtoi(dlg->m_heightSize->GetValue());
+
+            // vérification de validité des dimensions
+            int repX = wxAtoi(dlg->m_widthSize->GetValue());
+            if (repX > 0){
+                xSize = repX;
+            }
+
+            int repY = wxAtoi(dlg->m_heightSize->GetValue());
+            if (repY > 0){
+                ySize = repY;
+            }
 
             m_image->Rescale(xSize, ySize);
 
@@ -407,7 +419,7 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
         }
 
         // actualisation de la fenetre
-        parent->GetStatusBar()->SetStatusText("Zoom : "+std::to_string((int) (imageScale*100))+" %");
+        parent->GetStatusBar()->SetStatusText("Zoom : "+std::to_string(wxRound(imageScale*100))+" %");
         SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale, GetViewStart().x+deltaPosXScroll, GetViewStart().y+deltaPosYScroll);
         Refresh();
     }
