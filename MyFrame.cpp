@@ -25,11 +25,17 @@ enum{
 	ID_ReSize,
 	ID_Threshold_V2,
 	ID_Luminosite,
+
 	ID_BLEU,
 	ID_ROUGE,
 	ID_NOIR,
-	ID_VERT
-
+	ID_VERT,
+	ID_TRAIT,
+	ID_ON,
+	ID_CERCLE,
+	ID_LIGNE,
+	ID_RECTANGLE,
+	ID_TEXT
 
 };
 
@@ -130,6 +136,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
     wxMenu *menuDessin = new wxMenu ;
 
+    menuDessin->Append(ID_ON, wxT("Activer/desactiver..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_ON);
+
     menuDessin->Append(ID_BLEU, wxT("Bleu..."));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_BLEU);
 
@@ -141,6 +150,21 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 	menuDessin->Append(ID_VERT, wxT("Vert..."));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_VERT);
+
+	menuDessin->Append(ID_TRAIT, wxT("Taille du trait..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_TRAIT);
+
+	menuDessin->Append(ID_CERCLE, wxT("Mode Cercle..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_CERCLE);
+
+	menuDessin->Append(ID_LIGNE, wxT("Mode ligne..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_LIGNE);
+
+	menuDessin->Append(ID_RECTANGLE, wxT("Mode rectangle..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_RECTANGLE);
+
+	menuDessin->Append(ID_TEXT, wxT("Mode texte..."));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_TEXT);
 
 	menuBar->Append( menuDessin, wxT("Dessin" ));
 
@@ -266,6 +290,35 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
 
         case ID_VERT:
             m_panel->SetCouleur("GREEN");
+            break;
+
+        case ID_TRAIT:
+            m_panel->Trait();
+            break;
+
+        case ID_ON:
+            if(m_panel->GetOn_off()== true){
+               m_panel->SetOn_off(false);
+            }else{
+                m_panel->SetOn_off(true);
+            }
+            break;
+
+        case ID_LIGNE:
+            m_panel->SetMode("trait");
+            break;
+
+        case ID_CERCLE:
+            m_panel->SetMode("cercle");
+            break;
+
+        case ID_RECTANGLE:
+            m_panel->SetMode("rectangle");
+            break;
+
+        case ID_TEXT:
+            m_panel->SetMode("text");
+            m_panel->Text();
             break;
 
         case ID_ReSize:

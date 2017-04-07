@@ -1,16 +1,16 @@
-#ifndef MYROTATEDIALOG_H
-#define MYROTATEDIALOG_H
+#ifndef MYTEXTDIALOG_H
+#define MYTEXTDIALOG_H
 
 #include <wx/wx.h>
 
-class MyRotateDialog : public wxDialog{
+class MyTextDialog : public wxDialog{
     public:
-        MyRotateDialog(wxWindow* parent, wxWindowID id = wxID_ANY,
+        MyTextDialog(wxWindow* parent, wxWindowID id = wxID_ANY,
             const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
-        virtual ~MyRotateDialog();
+        virtual ~MyTextDialog();
 
-        wxRadioBox* m_radioBox;
+        wxTextCtrl *m_TextCtrl;
 
     protected:
 
@@ -19,4 +19,4 @@ class MyRotateDialog : public wxDialog{
         wxButton* m_cancelButton;
 };
 
-#endif // MYROTATEDIALOG_H
+#endif // MYRTEXTDIALOG_H

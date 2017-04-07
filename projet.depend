@@ -8,11 +8,13 @@
 1491211192 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyFrame.h
 	"MyPanel.h"
 
-1491211219 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.h
+1491586236 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.h
 	"MyHistogram.h"
 	"MyImage.h"
 	"MyThresholdDialog.h"
 	"MyLuminositeDialog.h"
+	"MyTraitDialog.h"
+	"MyTextDialog.h"
 	"MyRotateDialog.h"
 	"MyReSizeDialog.h"
 
@@ -1685,13 +1687,13 @@
 1491211276 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyHistogram.cpp
 	"MyHistogram.h"
 
-1491384803 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyImage.cpp
+1491385031 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyImage.cpp
 	"MyImage.h"
 
 1491384999 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyLuminositeDialog.cpp
 	"MyLuminositeDialog.h"
 
-1491383788 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.cpp
+1491587073 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.cpp
 	"MyPanel.h"
 
 1491216098 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyReSizeDialog.cpp
@@ -1703,6 +1705,15 @@
 1491211310 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyThresholdDialog.cpp
 	"MyThresholdDialog.h"
 
-1491213331 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTextDialog.cpp
-	"MyRotateDialog.h"
+1491585961 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTextDialog.cpp
+	"MyTextDialog.h"
+
+1491587329 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTextDialog.h
+	<wx/wx.h>
+
+1490367720 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTraitDialog.h
+	<wx/wx.h>
+
+1491585972 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTraitDialog.cpp
+	"MyTraitDialog.h"
 

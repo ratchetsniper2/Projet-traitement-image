@@ -4,14 +4,23 @@
 wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent); // seuillage
 wxDEFINE_EVENT(EVENEMENT_LUMINOSITE, wxCommandEvent); // luminosite
 
+wxDEFINE_EVENT(EVENEMENT_TRAIT, wxCommandEvent); // dessin
+
 MyPanel::MyPanel(wxFrame *parent) : wxScrolledCanvas(parent), m_image(NULL), histogram(NULL), parent(parent){
-    imageScale = 1.0;
 
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
     Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this);
     Bind(EVENEMENT_LUMINOSITE, &MyPanel::OnLuminosite, this);
     Bind(wxEVT_MOUSEWHEEL, &MyPanel::OnMouseWheel, this);
     Bind(wxEVT_LEFT_DOWN, &MyPanel::OnMouse, this);
+
+    imageScale = 1.0;
+
+    couleur = "BLACK";
+    on_off = false;
+    trait = 1;
+    mode = "trait";
+    texte = "test";
 
 }
 
@@ -256,7 +265,7 @@ void MyPanel::OnLuminosite(wxCommandEvent& event){
 
 // fonction dession : au click souris
 void MyPanel::OnMouse(wxMouseEvent& event){
-    if (m_image != NULL){
+    if (m_image != NULL && on_off == true){
         // modification pour récupérer la vrai position du curseur sur l'image en fonction du zoom
         wxPoint point = ScreenToClient(wxGetMousePosition());
         int mx = (GetViewStart().x + point.x) * (1/imageScale);
@@ -268,28 +277,49 @@ void MyPanel::OnMouse(wxMouseEvent& event){
         dc.SelectObject(m_bitmap);
         // ----------------------------------
 
-        if(couleur != NULL){
-            wxPen MonCrayon(couleur,5,wxSOLID);
-            dc.SetPen(MonCrayon);
-        }
+        // initialisation trait
+        wxPen MonCrayon(couleur, trait, wxSOLID);
+        dc.SetPen(MonCrayon);
 
 
         if(x_mouse == 0){
             x_mouse = mx;
             y_mouse = my;
-        }else{
-            SaveImageBeforeTraitment();
 
+            //pour écrire
+            if(strcmp(mode,"text")==0){
+                dc.DrawText(texte,x_mouse,y_mouse);
+                x_mouse = 0;
+                y_mouse = 0;
+        }
+        //pour tracer un trait
+        }else if(strcmp(mode,"trait")==0){
             dc.DrawLine(x_mouse,y_mouse,mx,my);
             x_mouse = 0;
             y_mouse = 0;
-
-            // modification pour draw sur l'image
-            delete(m_image);
-            m_image = new MyImage(m_bitmap.ConvertToImage());
-            Refresh();
-            // ----------------------------------
         }
+        //pour tracer un cercle
+        else if(strcmp(mode,"cercle")==0){
+            wxBrush MaBrush(couleur,wxSOLID );
+            dc.SetBrush(MaBrush);
+            dc.DrawCircle(x_mouse,y_mouse,std::max(abs(mx-x_mouse),abs(my-y_mouse)));
+            x_mouse = 0;
+            y_mouse = 0;
+        }
+        //pour tracer un rectangle
+        else if(strcmp(mode,"rectangle")==0){
+            wxBrush MaBrush(couleur,wxSOLID );
+            dc.SetBrush(MaBrush);
+            dc.DrawRectangle(x_mouse,y_mouse,mx-x_mouse,my-y_mouse);
+            x_mouse = 0;
+            y_mouse = 0;
+        }
+
+        // modification pour draw sur l'image
+        delete(m_image);
+        m_image = new MyImage(m_bitmap.ConvertToImage());
+        Refresh();
+        // ----------------------------------
 
     }
 }
@@ -297,6 +327,43 @@ void MyPanel::OnMouse(wxMouseEvent& event){
 // changer la couleur du pinceau
 void MyPanel::SetCouleur(const char* coul){
     couleur = coul;
+}
+
+//pour modifier la taille du trait avec une fenetre de dialogue
+void MyPanel::Trait(){
+    MyTraitDialog *dlg = new MyTraitDialog(this, -1, wxT("Taille du trait"), wxDefaultPosition, wxSize(250,140));
+
+    if (dlg->ShowModal() == wxID_OK){
+
+    }
+    else{
+        trait = 1;
+    }
+}
+//permet d'activer ou de desactiver la fonction dessin
+void MyPanel::SetOn_off(bool on){
+    on_off = on;
+}
+
+//permet de savoir si on peut dessiner
+bool MyPanel::GetOn_off(){
+    return on_off;
+}
+
+//permet de changer le mode de dessin
+void MyPanel::SetMode(const char * mod){
+    mode = mod;
+}
+
+
+void MyPanel::Text(){
+
+    MyTextDialog *dlg = new MyTextDialog(this, -1, wxT(""), wxDefaultPosition, wxSize(250,140));
+
+    if (dlg->ShowModal() == wxID_OK){
+        texte = dlg->m_TextCtrl->GetValue();
+    }
+
 }
 
 // sauvegarder l'image avant le traitement

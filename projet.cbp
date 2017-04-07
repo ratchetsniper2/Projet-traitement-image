@@ -58,6 +58,8 @@
 		<Unit filename="MyTextDialog.h" />
 		<Unit filename="MyThresholdDialog.cpp" />
 		<Unit filename="MyThresholdDialog.h" />
+		<Unit filename="MyTraitDialog.cpp" />
+		<Unit filename="MyTraitDialog.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />
