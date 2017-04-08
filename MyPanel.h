@@ -58,6 +58,9 @@ private:
 
     MyHistogram* histogram;
 
+    int m_width;
+    int m_height;
+
     // for dessin
     int x_mouse;
     int y_mouse;
@@ -67,12 +70,9 @@ private:
     int trait;
     wxString texte;
 
-    double imageScale; // for zoom
+    // for zoom
+    double imageScale;
     wxFrame* parent; // for change statusbar on zoom
-
-    int m_width;
-    int m_height;
-
     void OnMouseWheel(wxMouseEvent& event);
 
 };

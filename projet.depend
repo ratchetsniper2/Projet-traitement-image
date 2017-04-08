@@ -8,7 +8,7 @@
 1491211192 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyFrame.h
 	"MyPanel.h"
 
-1491586236 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.h
+1491668901 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.h
 	"MyHistogram.h"
 	"MyImage.h"
 	"MyThresholdDialog.h"
@@ -1679,7 +1679,7 @@
 1491211253 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyApp.cpp
 	"MyApp.h"
 
-1491384012 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyFrame.cpp
+1491587402 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyFrame.cpp
 	"MyFrame.h"
 	<time.h>
 	<wx/event.h>
@@ -1693,10 +1693,10 @@
 1491384999 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyLuminositeDialog.cpp
 	"MyLuminositeDialog.h"
 
-1491587073 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.cpp
+1491674574 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyPanel.cpp
 	"MyPanel.h"
 
-1491216098 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyReSizeDialog.cpp
+1491671064 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyReSizeDialog.cpp
 	"MyReSizeDialog.h"
 
 1491211303 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyRotateDialog.cpp
@@ -1705,15 +1705,15 @@
 1491211310 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyThresholdDialog.cpp
 	"MyThresholdDialog.h"
 
-1491585961 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTextDialog.cpp
+1491587309 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTextDialog.cpp
 	"MyTextDialog.h"
 
 1491587329 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTextDialog.h
 	<wx/wx.h>
 
-1490367720 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTraitDialog.h
+1491670361 /users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTraitDialog.h
 	<wx/wx.h>
 
-1491585972 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTraitDialog.cpp
+1491670462 source:/users/info/etu-s4/bouchval/M4105c/Projet-traitement-image/MyTraitDialog.cpp
 	"MyTraitDialog.h"
 

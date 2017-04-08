@@ -14,14 +14,6 @@ MyPanel::MyPanel(wxFrame *parent) : wxScrolledCanvas(parent), m_image(NULL), his
     Bind(wxEVT_MOUSEWHEEL, &MyPanel::OnMouseWheel, this);
     Bind(wxEVT_LEFT_DOWN, &MyPanel::OnMouse, this);
 
-    imageScale = 1.0;
-
-    couleur = "BLACK";
-    on_off = false;
-    trait = 1;
-    mode = "trait";
-    texte = "test";
-
 }
 
 MyPanel::~MyPanel(){}
@@ -36,19 +28,29 @@ void MyPanel::OpenImage(wxString fileName){
     if (m_image != NULL){
         delete(m_image);
         delete(histogram);
-        imageScale = 1.0;
     }
 
     m_image = new MyImage(fileName);
     SaveImageBeforeTraitment();
 
+    // l'histogramme n'est pas actualisé après un traitement
+    // il devrai etre crée quand on en a besoin
     histogram = new MyHistogram(m_image);
 
     m_width = m_image->GetWidth();
     m_height = m_image->GetHeight();
 
+    couleur = "BLACK";
+    on_off = false;
+    trait = 1;
+    mode = "trait";
+    x_mouse = -1;
+    y_mouse = -1;
+
+    imageScale = 1.0;
     SetScrollbars(1, 1, m_width*imageScale, m_height*imageScale);
     GetParent()->SetClientSize(m_width, m_height);
+
     Refresh();
 }
 
@@ -74,7 +76,6 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
         dc.SetUserScale(imageScale, imageScale); // pour le zoom
 
         dc.DrawBitmap(m_bitmap, 0, 0);
-        histogram = new MyHistogram(m_image);
 
     }
 }
@@ -266,60 +267,60 @@ void MyPanel::OnLuminosite(wxCommandEvent& event){
 // fonction dession : au click souris
 void MyPanel::OnMouse(wxMouseEvent& event){
     if (m_image != NULL && on_off == true){
-        // modification pour récupérer la vrai position du curseur sur l'image en fonction du zoom
+        // récupérer la vrai position du curseur sur l'image en fonction du zoom
         wxPoint point = ScreenToClient(wxGetMousePosition());
         int mx = (GetViewStart().x + point.x) * (1/imageScale);
         int my = (GetViewStart().y + point.y) * (1/imageScale);
         // -----------------------------------------------------------------
 
-        // modification pour draw sur l'image
-        wxMemoryDC dc;
-        dc.SelectObject(m_bitmap);
-        // ----------------------------------
+        // si premier click
+        if(x_mouse == -1 && strcmp(mode,"text") != 0){
+                x_mouse = mx;
+                y_mouse = my;
 
-        // initialisation trait
-        wxPen MonCrayon(couleur, trait, wxSOLID);
-        dc.SetPen(MonCrayon);
+        }else{
+            SaveImageBeforeTraitment();
 
+             // modification pour draw sur l'image
+            wxMemoryDC dc;
+            dc.SelectObject(m_bitmap);
+            // ----------------------------------
 
-        if(x_mouse == 0){
-            x_mouse = mx;
-            y_mouse = my;
+            wxPen MonCrayon(couleur, trait, wxSOLID);
+            dc.SetPen(MonCrayon);
 
             //pour écrire
-            if(strcmp(mode,"text")==0){
-                dc.DrawText(texte,x_mouse,y_mouse);
-                x_mouse = 0;
-                y_mouse = 0;
-        }
-        //pour tracer un trait
-        }else if(strcmp(mode,"trait")==0){
-            dc.DrawLine(x_mouse,y_mouse,mx,my);
-            x_mouse = 0;
-            y_mouse = 0;
-        }
-        //pour tracer un cercle
-        else if(strcmp(mode,"cercle")==0){
-            wxBrush MaBrush(couleur,wxSOLID );
-            dc.SetBrush(MaBrush);
-            dc.DrawCircle(x_mouse,y_mouse,std::max(abs(mx-x_mouse),abs(my-y_mouse)));
-            x_mouse = 0;
-            y_mouse = 0;
-        }
-        //pour tracer un rectangle
-        else if(strcmp(mode,"rectangle")==0){
-            wxBrush MaBrush(couleur,wxSOLID );
-            dc.SetBrush(MaBrush);
-            dc.DrawRectangle(x_mouse,y_mouse,mx-x_mouse,my-y_mouse);
-            x_mouse = 0;
-            y_mouse = 0;
-        }
+            if(strcmp(mode,"text") == 0){
+                dc.DrawText(texte,mx,my);
 
-        // modification pour draw sur l'image
-        delete(m_image);
-        m_image = new MyImage(m_bitmap.ConvertToImage());
-        Refresh();
-        // ----------------------------------
+            //pour tracer un trait
+            }else if(strcmp(mode,"trait") == 0){
+                dc.DrawLine(x_mouse,y_mouse,mx,my);
+
+            //pour tracer un cercle
+            }else if(strcmp(mode,"cercle") == 0){
+                wxBrush MaBrush(couleur,wxSOLID );
+                dc.SetBrush(MaBrush);
+                dc.DrawCircle(x_mouse,y_mouse,std::max(abs(mx-x_mouse),abs(my-y_mouse)));
+
+            //pour tracer un rectangle
+            }else if(strcmp(mode,"rectangle") == 0){
+                wxBrush MaBrush(couleur,wxSOLID);
+                dc.SetBrush(MaBrush);
+                dc.DrawRectangle(x_mouse,y_mouse,mx-x_mouse,my-y_mouse);
+
+            }
+
+            x_mouse = -1;
+            y_mouse = -1;
+
+            // modification pour draw sur l'image
+            delete(m_image);
+            m_image = new MyImage(m_bitmap.ConvertToImage());
+            Refresh();
+            // ----------------------------------
+
+        }
 
     }
 }
@@ -331,13 +332,10 @@ void MyPanel::SetCouleur(const char* coul){
 
 //pour modifier la taille du trait avec une fenetre de dialogue
 void MyPanel::Trait(){
-    MyTraitDialog *dlg = new MyTraitDialog(this, -1, wxT("Taille du trait"), wxDefaultPosition, wxSize(250,140));
+    MyTraitDialog *dlg = new MyTraitDialog(trait, this, -1, wxT("Taille du trait"), wxDefaultPosition, wxSize(250,140));
 
     if (dlg->ShowModal() == wxID_OK){
-
-    }
-    else{
-        trait = 1;
+        trait = dlg->m_trait->GetValue();
     }
 }
 //permet d'activer ou de desactiver la fonction dessin
@@ -434,6 +432,7 @@ void MyPanel::ReSize(){
 void MyPanel::OnMouseWheel(wxMouseEvent& event){
     if (m_image != NULL && event.ControlDown()){
 
+        // changement de l'incrémentation du zoom en fonction du zoom actuel
         double incrScale = 0.05; // incrémentation du zoom "5%"
         if (imageScale > 2){
             incrScale = 0.1;
@@ -441,6 +440,11 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
                 incrScale = 0.2;
             }
         }
+
+        // position souris sur l'image par rapport au zoom et à la position des scroll
+        wxPoint point = ScreenToClient(wxGetMousePosition());
+        double mx = (GetViewStart().x + point.x) * (1/imageScale);
+        double my = (GetViewStart().y + point.y) * (1/imageScale);
 
         // changement du zoom
         if (event.GetWheelRotation() > 0){
@@ -455,29 +459,27 @@ void MyPanel::OnMouseWheel(wxMouseEvent& event){
 
         // calcul du delta (déplacement de l'image par rapport à l'encienne position) par rapport à la position de la souris
         // permet de zoomer à la position de la souris
-        wxPoint point = ScreenToClient(wxGetMousePosition());
 
-        int deltaPosXScroll = 0;
-        double clientXSize = GetParent()->GetClientSize().GetWidth();
-        if (clientXSize < m_width*imageScale){
-            deltaPosXScroll = (incrScale*m_width/2)*(((double) point.x)/(clientXSize/2));
+        int deltaPosXScroll = 0; // déplacement à appliquer au scroll pour que le zoom se fasse à la position de la souris
+        if (GetParent()->GetClientSize().GetWidth() < m_width*imageScale){ // si l'image zoomé est plus grande que la zonne client
+            deltaPosXScroll = incrScale * mx; // un résonnement compliqué à mené à ce calcul tout simple
         }
 
         int deltaPosYScroll = 0;
-        double clientYSize = GetParent()->GetClientSize().GetHeight();
-        if (clientYSize < m_height*imageScale){
-            deltaPosYScroll = (incrScale*m_height/2)*(((double) point.y)/(clientYSize/2));
+        if (GetParent()->GetClientSize().GetHeight() < m_height*imageScale){
+            deltaPosYScroll = incrScale * my;
         }
 
-        // inversement du delta si on de-zoom
+        // inversement du déplacement si on dé-zoom
         if (event.GetWheelRotation() < 0){
-                if (GetViewStart().x > deltaPosXScroll){ // inversement si on peut de-zoomer dans cette direction
+                if (GetViewStart().x > deltaPosXScroll){
+                    // inversement que si on peut de-zoomer dans cette direction
+                    // pour pas que l'image sorte de la fenetre
                     deltaPosXScroll = -deltaPosXScroll;
                 }else{
                     deltaPosXScroll = 0;
                 }
-        }
-        if (event.GetWheelRotation() < 0){
+
                 if (GetViewStart().y > deltaPosYScroll){
                     deltaPosYScroll = -deltaPosYScroll;
                 }else{
